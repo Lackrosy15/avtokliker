@@ -1,0 +1,18 @@
+{
+  "pollIntervalSec": 10,
+
+  "listCurlFile": "curl/list.txt",
+  "acceptCurlFile": "curl/accept.txt",
+
+  "keywords": {
+    "include": ["внедрение", "битрикс", "crm", "настройка", "интеграция", "автоматизация"],
+    "exclude": ["1c", "1с", "бухгалтерия", "склад"]
+  },
+
+  "dryRun": true,
+
+  "notify": {
+    "telegramBotToken": "",
+    "telegramChatId": ""
+  }
+}
