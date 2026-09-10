@@ -21,19 +21,10 @@ git push
 ## 2. Первая установка — на сервере
 
 ```sh
-sudo apt-get update
-sudo apt-get install -y git python3 python3-venv
-sudo useradd --system --user-group --home-dir /var/lib/avtokliker --create-home --shell /usr/sbin/nologin avtokliker
-sudo install -d -o avtokliker -g avtokliker -m 700 /var/lib/avtokliker
-git clone https://github.com/YOUR_LOGIN/YOUR_REPO.git ~/avtokliker-repo
-sudo install -d /opt/avtokliker/src /opt/avtokliker/deploy
-sudo cp -r ~/avtokliker-repo/avtokliker/src/. /opt/avtokliker/src/
-sudo cp ~/avtokliker-repo/avtokliker/requirements.txt /opt/avtokliker/
-sudo cp ~/avtokliker-repo/avtokliker/deploy/config.server.json /opt/avtokliker/deploy/
-sudo cp ~/avtokliker-repo/avtokliker/deploy/avtokliker.service /etc/systemd/system/
-sudo python3 -m venv /opt/avtokliker/.venv
-sudo /opt/avtokliker/.venv/bin/python -m pip install -r /opt/avtokliker/requirements.txt
-sudo env PLAYWRIGHT_BROWSERS_PATH=/opt/avtokliker/browsers /opt/avtokliker/.venv/bin/python -m playwright install --with-deps chromium
+git add avtokliker/src avtokliker/deploy avtokliker/config.json avtokliker/requirements.txt avtokliker/README.md avtokliker/.gitignore
+git diff --cached --stat
+git commit -m "Add server auto-accept worker"
+git push
 ```
 
 Код принадлежит root, служба работает отдельным пользователем. Сессия хранится
