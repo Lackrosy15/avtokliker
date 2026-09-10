@@ -3,3 +3,9 @@ __pycache__/
 *.log
 .env
 cookies.json
+browser-profile/
+.venv/
+venv/
+curl/
+storage-state*.json
+storage-state*.tmp

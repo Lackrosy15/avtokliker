@@ -1,4 +1,12 @@
 {
+  "mode": "browser",
+  "browser": {
+    "appUrl": "https://crmby.bitrix24.by/marketplace/app/60/",
+    "frameHost": "util.1c-bitrix.by",
+    "channel": "msedge",
+    "columnTitle": "Предложения партнёров",
+    "settleMs": 2000
+  },
   "pollIntervalSec": 10,
 
   "listCurlFile": "curl/list.txt",
@@ -9,7 +17,7 @@
     "exclude": ["1c", "1с", "бухгалтерия", "склад"]
   },
 
-  "dryRun": true,
+  "dryRun": false,
 
   "notify": {
     "telegramBotToken": "",

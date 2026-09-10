@@ -14,6 +14,7 @@ Avtokliker — автоприём заявок партнёрского прил
 
 import json
 import logging
+import os
 import re
 import shlex
 import sys
@@ -26,7 +27,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
-CONFIG_PATH = ROOT / "config.json"
+CONFIG_PATH = Path(os.environ.get("AVTOKLIKER_CONFIG", str(ROOT / "config.json")))
 SEEN_PATH = ROOT / "seen.json"
 
 logging.basicConfig(
@@ -248,6 +249,10 @@ def save_seen(seen: set[str]) -> None:
 
 def run() -> None:
     cfg = load_config()
+    if cfg.get("mode", "browser") == "browser":
+        from browser_worker import run_browser
+        run_browser(cfg)
+        return
     list_file = ROOT / cfg.get("listCurlFile", "curl/list.txt")
     accept_file = ROOT / cfg.get("acceptCurlFile", "curl/accept.txt")
 

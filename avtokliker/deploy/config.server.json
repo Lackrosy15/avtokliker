@@ -1,0 +1,19 @@
+{
+  "mode": "browser",
+  "pollIntervalSec": 10,
+  "dryRun": false,
+  "notify": {
+    "stateFile": "/var/lib/avtokliker/alerts-state.json"
+  },
+  "browser": {
+    "appUrl": "https://crmby.bitrix24.by/marketplace/app/60/",
+    "frameHost": "util.1c-bitrix.by",
+    "columnTitle": "Предложения партнеров",
+    "channel": "chromium",
+    "headless": true,
+    "interactive": false,
+    "profileDir": "/var/lib/avtokliker/profile",
+    "storageStatePath": "/var/lib/avtokliker/storage-state.json",
+    "settleMs": 2000
+  }
+}

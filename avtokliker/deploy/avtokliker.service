@@ -1,0 +1,28 @@
+[Unit]
+Description=Bitrix24 application auto accept
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=avtokliker
+Group=avtokliker
+WorkingDirectory=/opt/avtokliker
+Environment=AVTOKLIKER_CONFIG=/opt/avtokliker/deploy/config.server.json
+Environment=PLAYWRIGHT_BROWSERS_PATH=/opt/avtokliker/browsers
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-/etc/avtokliker.env
+ExecStart=/opt/avtokliker/.venv/bin/python /opt/avtokliker/src/avtokliker.py
+Restart=always
+RestartSec=10
+TimeoutStopSec=30
+KillMode=control-group
+StateDirectory=avtokliker
+StateDirectoryMode=0700
+UMask=0077
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
