@@ -1,6 +1,6 @@
 {
   "mode": "browser",
-  "pollIntervalSec": 10,
+  "pollIntervalSec": 60,
   "dryRun": false,
   "notify": {
     "stateFile": "/var/lib/avtokliker/alerts-state.json"
@@ -14,6 +14,6 @@
     "interactive": false,
     "profileDir": "/var/lib/avtokliker/profile",
     "storageStatePath": "/var/lib/avtokliker/storage-state.json",
-    "settleMs": 2000
+    "settleMs": 8000
   }
 }

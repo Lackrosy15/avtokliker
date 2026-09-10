@@ -107,7 +107,7 @@ def run_browser(cfg):
         raise SystemExit("Установите зависимости: pip install -r requirements.txt")
 
     options = cfg.get("browser", {})
-    interval = float(cfg.get("pollIntervalSec", 10))
+    interval = float(cfg.get("pollIntervalSec", 60))
     if not math.isfinite(interval) or interval <= 0:
         raise ValueError("pollIntervalSec должен быть положительным числом")
     column_title = options.get("columnTitle", "Предложения партнёров")

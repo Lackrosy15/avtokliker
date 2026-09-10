@@ -108,6 +108,17 @@ sudo systemctl disable --now avtokliker
 
 ## 6. Обновление из GitHub
 
+При переходе на минутный интервал после копирования кода измените установленную
+конфигурацию (она не перезаписывается автоматически), до запуска службы:
+
+```sh
+sudo /opt/avtokliker/.venv/bin/python -c 'import json; from pathlib import Path; p=Path("/opt/avtokliker/deploy/config.server.json"); c=json.loads(p.read_text()); c["pollIntervalSec"]=60; p.write_text(json.dumps(c, ensure_ascii=False, indent=2))'
+```
+
+Если доступ временно заблокирован, оставьте службу выключенной до окончания
+блокировки. `systemctl disable --now avtokliker` также отключает автозапуск после
+перезагрузки; `systemctl enable --now avtokliker` включает его и запускает службу.
+
 ```sh
 cd ~/avtokliker-repo
 git pull --ff-only
@@ -132,7 +143,7 @@ sudo journalctl -u avtokliker -n 50 --no-pager
 гарантирует бессрочный вход. systemd не восстанавливает авторизацию.
 Telegram-уведомления настраиваются по [TELEGRAM.md](TELEGRAM.md).
 
-Цикл обновляет открытую страницу каждые 10 секунд, при медленной загрузке — дольше.
+Цикл обновляет открытую страницу каждые 60 секунд, при медленной загрузке — дольше.
 Кнопка ищется в колонке «Предложения партнеров» (е/ё допускаются), независимо от
 её текста. Нажатие запускает штатный запрос приложения. API принятия отдельно
 не воспроизводится. Лог фиксирует клик, не подтверждение приёма сервером.

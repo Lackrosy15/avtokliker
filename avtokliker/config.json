@@ -7,7 +7,7 @@
     "columnTitle": "Предложения партнёров",
     "settleMs": 2000
   },
-  "pollIntervalSec": 10,
+  "pollIntervalSec": 60,
 
   "listCurlFile": "curl/list.txt",
   "acceptCurlFile": "curl/accept.txt",

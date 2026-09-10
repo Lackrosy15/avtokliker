@@ -262,7 +262,7 @@ def run() -> None:
     list_req = parse_curl(list_file)
     accept_req = parse_curl(accept_file) if accept_file.exists() else None
 
-    interval = cfg.get("pollIntervalSec", 10)
+    interval = cfg.get("pollIntervalSec", 60)
     inc = cfg.get("keywords", {}).get("include", [])
     exc = cfg.get("keywords", {}).get("exclude", [])
     dry = cfg.get("dryRun", True)
