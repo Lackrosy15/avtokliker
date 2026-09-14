@@ -4,7 +4,7 @@
     "appUrl": "https://crmby.bitrix24.by/marketplace/app/60/",
     "frameHost": "util.1c-bitrix.by",
     "channel": "msedge",
-    "columnTitle": "Предложения партнёров",
+    "columnTitle": "Подробности",
     "settleMs": 2000
   },
   "pollIntervalSec": 60,

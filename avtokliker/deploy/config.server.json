@@ -8,7 +8,7 @@
   "browser": {
     "appUrl": "https://crmby.bitrix24.by/marketplace/app/60/",
     "frameHost": "util.1c-bitrix.by",
-    "columnTitle": "Предложения партнеров",
+    "columnTitle": "Подробности",
     "channel": "chromium",
     "headless": true,
     "interactive": false,
