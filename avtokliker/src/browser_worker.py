@@ -5,11 +5,24 @@ import math
 import os
 import re
 import time
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
 
 log = logging.getLogger("avtokliker")
 ROOT = Path(__file__).resolve().parent.parent
+
+
+def in_work_hours(now=None):
+    """Daily 09:00 inclusive to 22:00 exclusive, Minsk (UTC+3)."""
+    now = now or datetime.now(timezone.utc)
+    return 9 <= now.astimezone(timezone(timedelta(hours=3))).hour < 22
+
+
+def is_blocked(page, host):
+    pattern = re.compile(r"доступ\s+к\s+заявкам\s+заблокирован|подозрительн\w*\s+активност", re.I)
+    return any(frame.get_by_text(pattern).first.is_visible()
+               for frame in page.frames if urlparse(frame.url).hostname == host)
 
 
 def column_headers(frame, column_title):
@@ -166,7 +179,7 @@ def run_browser(cfg):
         raise SystemExit("Установите зависимости: pip install -r requirements.txt")
 
     options = cfg.get("browser", {})
-    interval = float(cfg.get("pollIntervalSec", 60))
+    interval = float(cfg.get("pollIntervalSec", 90))
     if not math.isfinite(interval) or interval <= 0:
         raise ValueError("pollIntervalSec должен быть положительным числом")
     column_title = options.get("columnTitle", "Подробности")
@@ -182,19 +195,31 @@ def run_browser(cfg):
     headless = options.get("headless", False) and not login_only
     profile = Path(options.get("profileDir", str(ROOT / "browser-profile")))
     profile.mkdir(parents=True, exist_ok=True)
+    block_file = Path(options.get("blockStateFile", str(profile.parent / "blocked.json")))
+    if block_file.exists():
+        raise SystemExit(78)  # Persistent manual-reset latch, including after reboot.
+    if not login_only:
+        while not in_work_hours():
+            time.sleep(30)
     with sync_playwright() as pw:
         browser = None
         if state_path and not login_only:
             browser = pw.chromium.launch(channel=options.get("channel", "msedge"), headless=headless)
-            context = browser.new_context(storage_state=state_path)
+            context = browser.new_context(storage_state=state_path, service_workers="block")
         else:
             context = pw.chromium.launch_persistent_context(
                 str(profile), channel=options.get("channel", "msedge"), headless=headless,
+                service_workers="block",
             )
+        stopped = False
+        context.route("**/*", lambda route: route.abort() if stopped or
+                      (not login_only and not in_work_hours()) else route.continue_())
         try:
             page = context.pages[0] if context.pages else context.new_page()
+            initial_loaded = False
             try:
                 page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                initial_loaded = True
             except Error:
                 if login_only or options.get("interactive", True):
                     raise
@@ -210,13 +235,27 @@ def run_browser(cfg):
             log.info("Проверка каждые %s секунд. Режим: %s. Остановка: Ctrl+C.",
                      interval, "DRY-RUN" if cfg.get("dryRun", False) else "AUTO")
             while not page.is_closed():
+                if not in_work_hours():
+                    page.wait_for_timeout(30000)
+                    continue
                 started = time.monotonic()
                 try:
-                    if urlparse(page.url).hostname != urlparse(url).hostname:
+                    if initial_loaded:
+                        initial_loaded = False
+                    elif urlparse(page.url).hostname != urlparse(url).hostname:
                         page.goto(url, wait_until="load", timeout=20000)
                     else:
                         page.reload(wait_until="load", timeout=20000)
                     page.wait_for_timeout(options.get("settleMs", 2000))
+                    if is_blocked(page, host):
+                        stopped = True
+                        block_file.write_text(json.dumps({"blockedAt": datetime.now(timezone.utc).isoformat()}))
+                        log.error("Обнаружена блокировка: запросы отключены до ручного снятия паузы")
+                        from alerts import send_telegram
+                        send_telegram(cfg, "Автокликер: Битрикс24 заблокировал доступ к заявкам. Запросы отключены. После снятия блокировки требуется ручное включение.")
+                        raise SystemExit(78)
+                    if not in_work_hours():
+                        continue
                     health = page_health(page, host, column_title)
                     health_alerts.observe(health)
                     count = 0

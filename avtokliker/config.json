@@ -7,7 +7,7 @@
     "columnTitle": "Подробности",
     "settleMs": 2000
   },
-  "pollIntervalSec": 60,
+  "pollIntervalSec": 90,
 
   "listCurlFile": "curl/list.txt",
   "acceptCurlFile": "curl/accept.txt",

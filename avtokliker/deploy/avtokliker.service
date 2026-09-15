@@ -15,6 +15,7 @@ Environment=PYTHONUNBUFFERED=1
 EnvironmentFile=-/etc/avtokliker.env
 ExecStart=/opt/avtokliker/.venv/bin/python /opt/avtokliker/src/avtokliker.py
 Restart=always
+RestartPreventExitStatus=78
 RestartSec=10
 TimeoutStopSec=30
 KillMode=control-group

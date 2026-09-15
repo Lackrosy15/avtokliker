@@ -1,6 +1,6 @@
 {
   "mode": "browser",
-  "pollIntervalSec": 60,
+  "pollIntervalSec": 90,
   "dryRun": false,
   "notify": {
     "stateFile": "/var/lib/avtokliker/alerts-state.json"

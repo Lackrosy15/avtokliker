@@ -19,12 +19,12 @@ def test_server_modes():
         context = pw.chromium.launch.return_value.new_context.return_value
         context.pages = [MagicMock()]
         context.pages[0].is_closed.return_value = True
-        with patch.dict(os.environ, {"AVTOKLIKER_LOGIN": "0"}), \
+        with patch("browser_worker.in_work_hours", return_value=True), patch.dict(os.environ, {"AVTOKLIKER_LOGIN": "0"}), \
                 patch("playwright.sync_api.sync_playwright", manager), \
                 patch("builtins.input", side_effect=AssertionError("Server must not prompt")):
             run_browser(cfg)
         pw.chromium.launch.assert_called_once_with(channel="chromium", headless=True)
-        pw.chromium.launch.return_value.new_context.assert_called_once_with(storage_state=str(state))
+        pw.chromium.launch.return_value.new_context.assert_called_once_with(storage_state=str(state), service_workers="block")
         context.close.assert_called_once()
 
         login_context = pw.chromium.launch_persistent_context.return_value

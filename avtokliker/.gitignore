@@ -3,6 +3,7 @@ __pycache__/
 *.log
 .env
 cookies.json
+blocked.json
 browser-profile/
 .venv/
 venv/
