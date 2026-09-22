@@ -2,6 +2,15 @@ node_modules/
 __pycache__/
 *.log
 .env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.p12
+*.pfx
+.github-avtokliker-credentials
+avtokliker.env
 cookies.json
 blocked.json
 browser-profile/
